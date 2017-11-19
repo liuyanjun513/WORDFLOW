@@ -3,11 +3,6 @@
 #include <stdio.h>
 
 class Player{
-protected:
-    
-public:
-    Player();
-    ~Player();
     
     
 };

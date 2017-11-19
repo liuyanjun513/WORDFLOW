@@ -18,51 +18,21 @@ Session::~Session(){}
 
 //------------------------------------------------------------------------------------------------------------------------SETUP
 void Session::setUp(){
-    xyTOxy();
-    bonusGen();
     lettGen(20);
     print();
     for(int x=0;x<13;x++){
         for(int y=0;y<13;y++){
-            if(grid[x][y]==""){
                 grid[x][y]=" ";
             }
         }
     }
 }
 //------------------------------------------------------------------------------------------------------------------------GET PLAYER MOVE INFO
-void Session::extract(string g){
     int end=0; int t=0; //tracks collected turn and word info
     char attempt[13];//holds letters to attempted word
-    while(check(g.at(t))==false){t++;}
-    if(g.at(t)=='1'){ mix(); t=(int)g.length();print();
-    } else if(g.at(t)=='0'){t=(int)g.length();play=false;}
-    while(check(g.at(t))==false){t++;}
-    for(int i=0;i<13;i++){
-        if(g.at(t)==alpha[i]){ypos=i;i=13;t++;}
-    }
-    if(check(g.at(t))==true){
-        if(check(g.at(t+1))==true){
-            xpos=((int)g.at(t+1))-39;t++;
-        }else{xpos=((int)g.at(t))-49;t++;}
-    }
-    while(check(g.at(t))==false){t++;}
-    if(toupper(g.at(t))=='R'){direction=1;
-    } else if(toupper(g.at(t))=='D'){direction=2;}
     t++;
-    for(int f=t;f<g.length()-2;f++){
-        for(int w=0;w<20;w++){//cycles usable letters and grabs word
-            if(t<g.length()&&toupper(g.at(t))==letters[w]&&used[w]!=1){//checks for match and unused
-                used[w]=1;//tracks used leters
-                attempt[end]=letters[w];//adds char to word
-                //f=(int)g.length();//tracks word size/string char/ letters
-                end++; w=-1; t++;
             }
         }
-        t++;
-    }
-    word=attempt;
-    move(attempt);
 }
 //------------------------------------------------------------------------------------------------------------------------MOVE
 void Session::move(string attempt){//makes move
@@ -81,45 +51,22 @@ void Session::xyTOxy(){//sets up start and end coordinates
     bool far=false;
     srand((unsigned)time(0));
     specialSpots[0][0]= rand() % 4;
-    specialSpots[0][1]=rand() % 13;
-    grid[(int)specialSpots[0][0]][(int)specialSpots[0][1]]="@";
-    while(far==false){//ensures start and end are sufficiently far away
-        specialSpots[1][0] = rand() % 13;
-        specialSpots[1][1] = rand() % 13;
-        if(sqrt(pow(specialSpots[1][0]-specialSpots[0][0],2)+pow(specialSpots[1][1]-specialSpots[0][1],2))>9){
-            far=true;
-            grid[(int)specialSpots[1][0]][(int)specialSpots[1][1]]="@";
-        }
-    }
 }
 //------------------------------------------------------------------------------------------------------------------------BONUS GENERATOR
 void Session::bonusGen(){
-    srand((unsigned)time(0)); int y=0;
-    bool canput[4]={false,false,false,false};
     string perks[12]={"+10","+10","+10","+10","+20","+20","+20","+30","+30","+50","DL", "DW"};
-    for(int x=2;x<6;x++){
         y++;
         while(canput[y]==false){//ensures spots are sufficiently far away
             specialSpots[x][0] = rand() % 13;
             specialSpots[x][1] = rand() % 13;
-            if((specialSpots[x][0]!=specialSpots[0][0]&&specialSpots[x][1]!=specialSpots[0][1])&&
-               (specialSpots[x][0]!=specialSpots[1][0]&&specialSpots[x][1]!=specialSpots[1][1])){
                 if(x==2){
                     canput[y]=true;
-                    grid[(int)specialSpots[x][0]][(int)specialSpots[x][1]]=perks[rand() % 10];
-                } else if(x==3&&sqrt(pow(specialSpots[x][0]-specialSpots[2][0],2)+pow(specialSpots[x][1]-specialSpots[2][1],2))>3){
                     canput[y]=true;
-                    grid[(int)specialSpots[x][0]][(int)specialSpots[x][1]]=perks[rand() % 10];
-                } else if(x==4&&sqrt(pow(specialSpots[4][0]-specialSpots[2][0],2)+pow(specialSpots[4][1]-specialSpots[2][1],2))>3
-                          &&sqrt(pow(specialSpots[3][0]-specialSpots[4][0],2)+pow(specialSpots[3][1]-specialSpots[4][1],2))>3){
                     canput[y]=true;
-                    grid[(int)specialSpots[x][0]][(int)specialSpots[x][1]]=perks[rand() % 2+10];
                 } else if(x==5&&sqrt(pow(specialSpots[3][0]-specialSpots[5][0],2)+pow(specialSpots[3][1]-specialSpots[5][1],2))>3
                           &&sqrt(pow(specialSpots[5][0]-specialSpots[2][0],2)+pow(specialSpots[5][1]-specialSpots[2][1],2))>3
                           &&sqrt(pow(specialSpots[5][0]-specialSpots[4][0],2)+pow(specialSpots[5][1]-specialSpots[4][1],2))>3){
                     canput[y]=true;
-                    grid[(int)specialSpots[x][0]][(int)specialSpots[x][1]]=perks[rand() % 2+10];
-                }
             }
         }
     }
@@ -146,12 +93,9 @@ void Session::updateLetters(){//updates letters
 }
 //------------------------------------------------------------------------------------------------------------------------CHECK LETTERS
 bool Session::check(char c){
-    bool yes=false;
     char poss[24]={'A','B','C','D','E','F','G','H','I','J','K','L','M','1','2','3','4','5','6','7','8','9','0','R'};
     for(int y=0;y<24;y++){
-        if(toupper(c)==poss[y]){yes=true;}
     }
-    return yes;
 }
 //------------------------------------------------------------------------------------------------------------------------MIX LETTERS
 void Session::mix(){//mixes letters
@@ -198,9 +142,6 @@ void Session::updateScore(){
 //------------------------------------------------------------------------------------------------------------------------CHECK WORD FITS
 bool Session::fits(){
     bool fit = true;
-    if(xpos<0||xpos>12||ypos>12||ypos<0){fit=false;
-    } else if(direction==1&&word.length()+xpos>12){fit=false;
-    } else if(direction==2&&word.length()+ypos>12){fit=false;
     } else{
         for(int g=0;g<word.length()-1;g++){
             if(direction==1&&(grid[xpos+g][ypos].at(0)!=word.at(g)&&grid[xpos+g][ypos].at(0)!='@'&&grid[xpos+g][ypos].at(0)!='+')){
@@ -219,7 +160,6 @@ bool Session::fits(){
 //------------------------------------------------------------------------------------------------------------------------REFRESH
 void Session::refresh(){//clears all trackers for next turn
     direction=0; word=""; xpos=0; ypos=0; turn++;
-    for(int y=0;y<20;y++){used[y]=0;}
 }
 //------------------------------------------------------------------------------------------------------------------------PRINT
 void Session::print(){
@@ -229,6 +169,7 @@ void Session::print(){
     cout<<"|\tTurn: "<<turn<<"\t\t\t\t\t\t\t\t\tW  O  R  D   F  L  O  W \t\t\t\t\t\t\tScore: "<<score<<"\t|\n";
     cout<<"|\t\t\t\t\t\t\t\t\t\t   -------------------------\t\t\t\t\t\t\t\t\t\t|\n";
     cout<<"|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|\n";
+    cout<<"|\t\t  1    2    3    4    5    6    7    8    9    10   11   12   13\t\t\t  Letter Values\t\t\t|\n";
     cout<<"|\t\t   1\t2\t 3\t  4\t   5\t6\t 7\t  8\t   9   10\t11\t 12\t  13\t\t\t  Letter Values\t\t\t|\n";
     cout<<"|\t\t|----|----|----|----|----|----|----|----|----|----|----|----|----|\t\t\t\t\t\t\t\t\t|\n";
     for(int i=0;i<13;i++){//prints grid
