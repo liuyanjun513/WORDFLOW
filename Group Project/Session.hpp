@@ -26,10 +26,18 @@ protected:
     int xpos=0;//holds x & y starting positions for words
     int ypos=0;
     string word;//holds word in char array with end
+    string newWord;
     int turn=0;//stores players turn count
     int score=0;//stores players score
     int hS=0;//stores highest scoring word score
     string hSW="";//stores players highest scoring word
+    
+    //new variable
+    int startX=-1,startY=-1;   // coordinate for start point
+    int endX=-1,endY=-1;       // coordinate for end point
+    bool theFirstTime=true;
+    char extraLetters[20];
+    int isExist[20];
 public:
     bool play=true;//keeps track of game and whther to conitinue
     Session();//contructor
@@ -49,5 +57,9 @@ public:
     bool fits();//check if word fits on grid
     bool check(char c);
     void print();//prints session grid
+    
+    
+    //new fun
+    int getScore();
 };
 #endif
